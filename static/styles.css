@@ -1,0 +1,368 @@
+/* Reset some default browser styling */
+body, h1, h2, button, audio {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Apply a consistent font and background color */
+body {
+    font-family: "Josefin Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    background-color: #f4f4f9; /* Default light theme background */
+    color: #333; /* Default light theme text color */
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for theme change */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes at least the full height of the viewport */
+}
+
+/* Dark theme styles */
+body.dark-theme {
+    background-color: #000000; /* Dark theme background for body */
+    color: #ffffff; /* Dark theme text color */
+}
+
+body.dark-theme .container {
+    background-color: #333333; /* Dark theme background for container */
+    color: #ffffff; /* Dark theme text color for container */
+}
+
+/* Center the main content and add some spacing */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8em; /* Responsive font size */
+}
+
+/* Style buttons with a modern look */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 10px;
+}
+
+button:active {
+    transform: scale(0.98); /* Slightly shrink button on click */
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+/* Style the audio elements to be centered and responsive */
+audio {
+    display: block;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 100%; /* Ensure audio player doesn't overflow */
+}
+
+/* Add some spacing between different sections */
+h2 {
+    margin-top: 20px;
+    font-size: 1.6em; /* Responsive font size */
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Style the page container */
+.container {
+    max-width: 100%; /* Make container full width */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff; /* Default light theme background for container */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for theme change */
+    flex: 1; /* Allow the container to grow and take available space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space between content and footer */
+}
+
+#chatContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Default alignment for bot messages */
+    max-width: 100%; /* Ensure container does not exceed screen width */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    padding: 10px; /* Add padding for better appearance */
+    box-sizing: border-box; /* Include padding in the container's width */
+    scroll-behavior: smooth;
+}
+
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px 20px;
+    color: white;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.navbar a:hover {
+    background-color: #575757;
+    border-radius: 5px;
+}
+
+.left {
+    flex: 1;
+}
+
+.right {
+    display: flex;
+    gap: 10px;
+}
+
+/* Toggle Button Styles */
+.theme-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #f0f0f0; /* Light theme background */
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 8px 12px; /* Increased padding for better touch targets */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for theme change and animation */
+    z-index: 1000; /* Ensure the toggle button is on top of other elements */
+    width: 50px; /* Fixed width for consistency */
+    height: 50px; /* Fixed height for consistency */
+    text-align: center;
+    font-size: 1.5em; /* Responsive font size */
+}
+
+.theme-toggle span {
+    display: inline-block;
+    margin: 0 5px;
+    transition: color 0.3s, transform 0.3s; /* Smooth transition for emoji color and movement */
+}
+
+/* Text input container at the bottom */
+
+input[type="text"] {
+    font-family: "Josefin Sans", sans-serif;;
+  }
+
+.text-input-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff; /* Background color to separate from content */
+    border-top: 1px solid #ddd; /* Border to separate from content */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow to give the container a slight elevation */
+    border-radius: 8px; /* Rounded corners for the container */
+    width: 100%;
+    max-width: 800px; /* Ensure container doesn't exceed max-width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-input-container input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Rounded corners for input */
+    margin-right: 10px;
+    max-width: calc(100% - 60px); /* Adjust width to fit with the button */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.text-input-container button {
+    font-family: "Josefin Sans", sans-serif;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50px; /* Fully rounded corners */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.text-input-container button:hover {
+    background-color: #0056b3;
+}
+
+/* User message styling */
+.user-message-gap {
+    margin-bottom: 7.5px; /* Adding gap below the user prompt */
+    margin-top: 15px; /* Adding gap above the user prompt */
+}
+
+.user-message {
+    align-self: flex-end; /* Align user messages to the right */
+    background-color: #e1ffc7; /* Example background color */
+    color: #000; /* Ensure text is black or a contrasting color */
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 3px; /* Gap after user messages */
+    max-width: 80%; /* Optional: limit message width */
+    word-wrap: break-word; /* Ensure long words break */
+}
+
+/* Bot message styling */
+.bot-message {
+    background-color: #f0f0f0; /* Example background color */
+    color: #000; /* Ensure text is black or a contrasting color */
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 3px; /* Gap after bot messages */
+    max-width: 80%; /* Optional: limit message width */
+    word-wrap: break-word; /* Ensure long words break */
+}
+
+/* Add basic styling for the microphone icon */
+.mic-icon {
+    cursor: pointer;
+    font-size: 24px;
+    color: #007bff;
+    margin-left: 10px;
+    transition: color 0.3s;
+}
+
+.mic-icon:hover {
+    color: #0056b3;
+}
+
+/* Dark theme toggle button style */
+body.dark-theme .theme-toggle {
+    background-color: #333; /* Dark theme background */
+    color: #fff;
+}
+
+/* Emoji styles for transition effect */
+body.dark-theme .theme-toggle .sun {
+    color: #f0f0f0; /* Light color for sun in dark theme */
+    transform: translateX(20px); /* Move sun emoji when dark theme is active */
+}
+
+body.dark-theme .theme-toggle .moon {
+    color: #fff; /* Dark color for moon in dark theme */
+    transform: translateX(-20px); /* Move moon emoji when dark theme is active */
+}
+
+body.light-theme .theme-toggle .sun {
+    color: #333; /* Dark color for sun in light theme */
+    transform: translateX(-20px); /* Move sun emoji when light theme is active */
+}
+
+body.light-theme .theme-toggle .moon {
+    color: #333; /* Light color for moon in light theme */
+    transform: translateX(20px); /* Move moon emoji when light theme is active */
+}
+
+/* Keyframe animation for button slide effect */
+@keyframes slideIn {
+    0% { transform: translateX(20px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-20px); }
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.6em; /* Smaller font size for tablets */
+    }
+
+    h2 {
+        font-size: 1.4em; /* Smaller font size for tablets */
+    }
+
+    .text-input-container {
+        flex-direction: column; /* Stack input and button vertically */
+        align-items: stretch;
+        padding: 10px; /* Add padding for touch targets */
+    }
+
+    .text-input-container input {
+        width: 100%; /* Full width input on tablets */
+        margin-right: 0; /* Remove right margin */
+        margin-bottom: 10px; /* Space between input and button */
+    }
+
+    .text-input-container button {
+        width: 100%; /* Full width button on tablets */
+        margin-left: 0; /* Remove left margin */
+    }
+
+    .mic-icon {
+        font-size: 20px; /* Smaller icon size on tablets */
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px; /* Adjust padding for touch targets */
+        font-size: 1.4em; /* Adjust font size for tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.4em; /* Even smaller font size for very small screens */
+    }
+
+    h2 {
+        font-size: 1.2em; /* Even smaller font size for very small screens */
+    }
+
+    .text-input-container {
+        flex-direction: column; /* Stack input and button vertically */
+        align-items: stretch;
+        padding: 10px; /* Add padding for touch targets */
+    }
+
+    .text-input-container input {
+        margin-bottom: 10px; /* Space between input and button */
+    }
+
+    .text-input-container button {
+        margin-top: 10px; /* Space above button */
+    }
+
+    .mic-icon {
+        font-size: 18px; /* Smaller icon size on very small screens */
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px; /* Adjust padding for touch targets */
+        font-size: 1.2em; /* Adjust font size for very small screens */
+    }
+}
