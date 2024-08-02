@@ -3,7 +3,7 @@
 ChatSpeak is an interactive conversational AI application designed to enhance user communication through both text and voice inputs. This project integrates advanced text and speech technologies to offer a seamless and engaging experience. Users can interact with the bot either by typing their messages or speaking directly into their devices.
 
 ![Dark-Theme-Website-UI](static/images/dark-theme.png)
-<br>
+<br> <br> <br> <br>
 ![light-Theme-Website-UI](static/images/light-theme.png)
 
 ## Key Features 😎
