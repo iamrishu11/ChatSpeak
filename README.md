@@ -48,8 +48,8 @@ This project is as structured as follows:
    ChatSpeak/
    │
    ├── app.py                # Main application file
-   ├── bot.py                # Bot logic and functionalities
-   ├── burt.py               # Additional bot-related functionalities or classes
+   ├── bot.py                # loop bot logic
+   ├── burt.py               # Bot file for app.py
    ├── config.json           # Configuration file for the bot
    ├── requirements.txt      # List of project dependencies
    │
