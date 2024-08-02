@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendTextButton = document.getElementById('sendText');
     const micIcon = document.getElementById('micIcon');
     const currentTheme = localStorage.getItem('theme') || 'light-theme';
+    const menuIcon = document.getElementById('menuIcon');
+    const menuContent = document.getElementById('menuContent');
 
     // Apply the current theme
     document.body.classList.add(currentTheme);
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     mediaRecorder.onstop = async () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); // Ensure this MIME type matches server expectation
                         audioChunks = []; // Clear the chunks
                         micIcon.textContent = '🎙️'; // Change icon back to unrecording state
 
@@ -111,17 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 throw new Error('Network response was not ok');
                             }
 
-                            const data = await response.blob();
-                            const audioUrl = URL.createObjectURL(data);
+                            const audioBlob = await response.blob(); // Get the audio response as a Blob
+                            const audioUrl = URL.createObjectURL(audioBlob);
                             const audio = new Audio(audioUrl);
-                            audio.play();
+                            audio.play(); // Play the audio response
 
-                            // Optionally: Handle the transcribed text if your server returns it in JSON
-                            const textResponse = await response.json();
-                            if (textResponse && textResponse.text) {
-                                addMessageToChat(textResponse.text, true); // Display transcribed text
-                                processUserInput(textResponse.text); // Process the transcribed text
-                            }
                         } catch (error) {
                             console.error('Error:', error);
                         }
@@ -135,6 +131,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // Handle menu visibility
+    menuIcon.addEventListener('click', function() {
+        // Toggle visibility of the menu
+        if (menuContent.style.display === 'block') {
+            menuContent.style.display = 'none';
+        } else {
+            menuContent.style.display = 'block';
+        }
+    });
+
+    // Hide the menu if clicked outside of it
+    document.addEventListener('click', function(event) {
+        if (!menuIcon.contains(event.target) && !menuContent.contains(event.target)) {
+            menuContent.style.display = 'none';
+        }
+    });
+
+    // Add functionality for the export options
+    document.getElementById('exportDatabase').addEventListener('click', function() {
+        alert('Export as Database clicked');
+        // Implement the export as database functionality
+    });
+
+    document.getElementById('exportTxt').addEventListener('click', function() {
+        alert('Export as TXT clicked');
+        // Implement the export as TXT functionality
+    });
 });
 
 // Function to add a message to the chat
@@ -178,25 +202,20 @@ function processUserInput(input) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json()) // Parse the server response as JSON
-    .then(data => {
-        if (data.response) {
-            // Add the bot's response to the chat
-            addMessageToChat(`${data.response}`); // Generated bot response
-            // Convert the bot's response to speech
-            speakResponse(data.response);
-        } else {
-            addMessageToChat('Sorry, something went wrong.');
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
         }
+        return response.blob(); // Parse the response as a Blob
+    })
+    .then(blob => {
+        // Create an object URL for the Blob and play the audio
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        audio.play();
     })
     .catch(error => {
         addMessageToChat('Sorry, something went wrong.');
         console.error('Error:', error);
     });
-}
-
-// Function to convert text to speech
-function speakResponse(response) {
-    const utterance = new SpeechSynthesisUtterance(response);
-    window.speechSynthesis.speak(utterance);
 }

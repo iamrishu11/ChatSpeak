@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Chatbot</title>
+    <title>ChatSpeak</title>
 
-    <!-- My css File-->
+    <!-- My CSS File -->
     <link rel="stylesheet" href="../static/styles.css">
 
     <!-- Favicon -->
@@ -15,42 +15,56 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-    
-  </head>
-  <body class="light-theme">
-    <div class="navbar">
-      <div class="left">
-        <a href="#">Home</a>
-      </div>
-      <div class="right">
-        <a href="#">Author</a>
-        <a href="#">Login / Signup</a>
-        <a href="#">Signup</a>
-      </div>
+
+    <!-- FontAwesome Icons -->
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'> 
+</head>
+<body class="light-theme">
+      <div class="navbar" aria-label="Main Navigation">
+        <div class="left">
+          <a href="#" style="padding-top: 10px; padding-bottom: 10px;">Home</a>
+        </div>
+        <div class="right">
+            <a href="https://github.com/iamrishu11/ChatSpeak" style="padding-top: 10px;"> <i class="fa fa-github fa-2x"></i></a>
+            <a href="#">Login</a>
+            <a href="#">Signup</a>
+            <!--theme toggle here -->
+            <div id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+                <span class="sun">☀️</span>
+                <span class="moon">🌙</span>
+            </div>
+        </div>
     </div>
     <br>
     <div class="container">
-      <header>
-        <h1>Voice Chatbot</h1>
-        <div id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
-          <span class="sun">☀️</span>
-          <span class="moon">🌙</span>
-        </div>
-      </header>
-      <main class="chat-container" id="chatContainer">
-        <div id="welcomeMessage">
-          <p>Welcome! Ask me anything or start by clicking the microphone icon.</p>
-        </div>
-        <!-- Chat messages will be appended here -->
-      </main>
-      <footer class="text-input-container" style="padding-left: 5px; padding-right: 0px;">
-        <input type="text" id="textInput" placeholder="Type your message here..." aria-label="Type your message here...">
-        <span id="micIcon" class="mic-icon" aria-label="Microphone Icon">🎙️</span>
-        <button id="sendText" aria-label="Send Text">Send</button>
+        <header>
+            <h1>ChatSpeak</h1>
+            <div class="menu-container">
+                <div class="menu-icon" id="menuIcon">⋮</div>
+                <div class="menu-content" id="menuContent">
+                    <a href="#" id="exportDatabase">Export as Database File</a>
+                    <a href="#" id="exportTxt">Export as TXT</a>
+                </div>
+            </div>
+        </header>
+        <main class="chat-container" id="chatContainer">
+            <div id="welcomeMessage">
+                <p>Welcome! Ask me anything or start by clicking the microphone icon.</p>
+            </div>
+            <!-- Chat messages will be appended here -->
+        </main>
+        <footer class="text-input-container" style="padding-left: 5px; padding-right: 0px;">
+          <textarea id="textInput" placeholder="Type your message here..." aria-label="Type your message here..." rows="3" style="width: calc(100% - 40px); font-family: 'Josefin Sans', sans-serif;"></textarea>
+          <span id="micIcon" class="mic-icon" aria-label="Microphone Icon">🎙️</span>
+          <button id="sendText" aria-label="Send Text">Send</button>
       </footer>
     </div>
 
-    <!-- This is my js file -->
+    <!-- Audio Element for Bot Responses -->
+    <audio id="responseAudio" controls style="display:none;"></audio>
+
+    <!-- This is my JS file -->
     <script src="../static/script.js"></script>
-  </body>
+</body>
 </html>
+

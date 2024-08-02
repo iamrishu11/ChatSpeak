@@ -119,8 +119,11 @@ h2 {
 .navbar a {
     color: white;
     text-decoration: none;
-    padding: 10px;
+    padding-top: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
     font-size: 16px;
+    text-align: justify;
 }
 
 .navbar a:hover {
@@ -129,6 +132,8 @@ h2 {
 }
 
 .left {
+    display: flex;
+    gap: 10px;
     flex: 1;
 }
 
@@ -139,36 +144,22 @@ h2 {
 
 /* Toggle Button Styles */
 .theme-toggle {
-    position: fixed;
-    top: 10px;
-    right: 10px;
     background-color: #f0f0f0; /* Light theme background */
     border: 1px solid #ccc;
     border-radius: 25px;
     padding: 8px 12px; /* Increased padding for better touch targets */
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: background-color 0.3s, transform 0.3s; /* Smooth transition for theme change and animation */
     z-index: 1000; /* Ensure the toggle button is on top of other elements */
-    width: 50px; /* Fixed width for consistency */
-    height: 50px; /* Fixed height for consistency */
     text-align: center;
     font-size: 1.5em; /* Responsive font size */
-}
-
-.theme-toggle span {
-    display: inline-block;
-    margin: 0 5px;
-    transition: color 0.3s, transform 0.3s; /* Smooth transition for emoji color and movement */
 }
 
 /* Text input container at the bottom */
 
 input[type="text"] {
     font-family: "Josefin Sans", sans-serif;;
-  }
+}
 
 .text-input-container {
     display: flex;
@@ -365,4 +356,64 @@ body.light-theme .theme-toggle .moon {
         padding: 6px 10px; /* Adjust padding for touch targets */
         font-size: 1.2em; /* Adjust font size for very small screens */
     }
+}
+
+.text-input-container textarea {
+    resize: none; /* Prevents the user from resizing the textarea */
+    padding: 10px; /* Adds padding for better text visibility */
+    border: 1px solid #ccc; /* Adds a border */
+    border-radius: 4px; /* Rounds the corners */
+}
+
+header {
+    display: flex;
+    justify-content: center; /* Center the heading */
+    align-items: center; /* Center items vertically */
+    position: relative; /* Allows absolute positioning of menu */
+    padding: 0 20px; /* Add padding as needed */
+    margin-bottom: 20px; /* Space below the header */
+    padding-top: 10px;
+}
+
+/* Menu container positioned absolutely within the header */
+.menu-container {
+    position: absolute; /* Absolute positioning */
+    right: 20px; /* Align to the right of the header */
+    top: 50%; /* Center vertically relative to the header */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+}
+
+.menu-icon {
+    cursor: pointer;
+    font-size: 1.5em; /* Adjust font size for visibility */
+    margin-left: 10px; /* Space between heading and menu icon */
+}
+
+.menu-content {
+    display: none; /* Hide menu content by default */
+    position: absolute;
+    top: 100%; /* Position below the menu icon */
+    right: 0; /* Align to the right of the menu icon */
+    background-color: #fff; /* Background color for the dropdown */
+    border: 1px solid #ddd; /* Border around dropdown */
+    border-radius: 5px; /* Rounded corners for dropdown */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for dropdown */
+    padding: 10px;
+    z-index: 1000; /* Ensure dropdown is above other elements */
+}
+
+.menu-content a {
+    display: block; /* Make links block level for easy clicking */
+    padding: 10px;
+    text-decoration: none;
+    color: #333; /* Text color */
+}
+
+.menu-content a:hover {
+    background-color: #f0f0f0; /* Background color on hover */
+}
+
+/* Show the menu when the menu icon is clicked */
+.menu-container.active .menu-content {
+    display: block;
 }
