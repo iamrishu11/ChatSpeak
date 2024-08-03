@@ -204,7 +204,7 @@ h2 {
 /* User message styling */
 .user-message-gap {
     margin-bottom: 7.5px; /* Adding gap below the user prompt */
-    margin-top: 15px; /* Adding gap above the user prompt */
+    margin-top: 10px; /* Adding gap above the user prompt */
 }
 
 .user-message {
@@ -213,7 +213,7 @@ h2 {
     color: #000; /* Ensure text is black or a contrasting color */
     padding: 10px;
     border-radius: 10px;
-    margin-bottom: 3px; /* Gap after user messages */
+    margin-bottom: 15px; /* Gap after user messages */
     max-width: 80%; /* Optional: limit message width */
     word-wrap: break-word; /* Ensure long words break */
 }
@@ -224,7 +224,7 @@ h2 {
     color: #000; /* Ensure text is black or a contrasting color */
     padding: 10px;
     border-radius: 10px;
-    margin-bottom: 3px; /* Gap after bot messages */
+    margin-bottom: 15px; /* Gap after bot messages */
     max-width: 80%; /* Optional: limit message width */
     word-wrap: break-word; /* Ensure long words break */
 }

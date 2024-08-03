@@ -304,6 +304,6 @@ async function processUserInput(input) {
 
     } catch (error) {
         console.error('Error:', error);
-        addMessageToChat('Sorry, something went wrong with processing your text.', true);
+        addMessageToChat('Sorry, something went wrong with processing your text.', false);
     }
 }
