@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentTheme = localStorage.getItem('theme') || 'light-theme';
     const menuIcon = document.getElementById('menuIcon');
     const menuContent = document.getElementById('menuContent');
+    const exportTxtButton = document.getElementById('exportTxt');
+    const exportDbButton = document.getElementById('exportDatabase');
 
     // Apply the current theme
     document.body.classList.add(currentTheme);
@@ -89,40 +91,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
-
+    
                     mediaRecorder.ondataavailable = event => {
                         audioChunks.push(event.data);
                     };
-
+    
                     mediaRecorder.onstop = async () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); // Ensure this MIME type matches server expectation
                         audioChunks = []; // Clear the chunks
                         micIcon.textContent = '🎙️'; // Change icon back to unrecording state
-
-                        // Send audio to server for transcription
+    
+                        // Add a placeholder message to the chat container
+                        addMessageToChat('Processing your audio message...', true);
+    
                         const formData = new FormData();
                         formData.append('audio', audioBlob, 'audio.wav');
-
+    
                         try {
                             const response = await fetch('/process_audio', {
                                 method: 'POST',
                                 body: formData
                             });
-
+    
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
                             }
-
-                            const audioBlob = await response.blob(); // Get the audio response as a Blob
-                            const audioUrl = URL.createObjectURL(audioBlob);
-                            const audio = new Audio(audioUrl);
-                            audio.play(); // Play the audio response
-
+    
+                            const { response_text } = await response.json(); // Expect JSON response from server
+    
+                            // Update the placeholder message to display the recognized text
+                            addMessageToChat(`Recognized text: ${response_text}`, false);
+    
                         } catch (error) {
                             console.error('Error:', error);
+                            addMessageToChat('Sorry, something went wrong with processing your audio.', true);
                         }
                     };
-
+    
                     mediaRecorder.start();
                     micIcon.textContent = '⏹️'; // Change icon to recording state
                 } catch (error) {
@@ -149,17 +154,83 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Add functionality for the export options
-    document.getElementById('exportDatabase').addEventListener('click', function() {
-        alert('Export as Database clicked');
-        // Implement the export as database functionality
-    });
+    // Handle export as TXT button click
+    if (exportTxtButton) {
+        exportTxtButton.addEventListener('click', async () => {
+            if (isChatContainerEmpty()) {
+                alert('No chat content available to export.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/export_txt', {
+                    method: 'POST'
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'chat_history.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+    
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Sorry, something went wrong with exporting the chat history.');
+            }
+        });
+    }
 
-    document.getElementById('exportTxt').addEventListener('click', function() {
-        alert('Export as TXT clicked');
-        // Implement the export as TXT functionality
-    });
+    // Handle export as database button click
+    if (exportDbButton) {
+        exportDbButton.addEventListener('click', async () => {
+            if (isChatContainerEmpty()) {
+                alert('No chat content available to export.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/export_db', {
+                    method: 'POST'
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'chat_history.db';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+    
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Sorry, something went wrong with exporting the database.');
+            }
+        });
+    }
 });
+
+// Function to check if chat container is empty, excluding the welcomeMessage div
+function isChatContainerEmpty() {
+    const chatContainer = document.getElementById('chatContainer');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    
+    // Check if there are any children elements other than welcomeMessage
+    return Array.from(chatContainer.children).every(child => child === welcomeMessage);
+}
 
 // Function to add a message to the chat
 function addMessageToChat(message, isUser = false) {
@@ -206,16 +277,16 @@ function processUserInput(input) {
         if (!response.ok) {
             throw new Error('Network response was not ok.');
         }
-        return response.blob(); // Parse the response as a Blob
+        return response.json(); // Parse the response as JSON
     })
-    .then(blob => {
-        // Create an object URL for the Blob and play the audio
-        const audioUrl = URL.createObjectURL(blob);
+    .then(data => {
+        const audioUrl = data.audio_url;
         const audio = new Audio(audioUrl);
         audio.play();
+        addMessageToChat('Bot is processing your text...', false);
     })
     .catch(error => {
-        addMessageToChat('Sorry, something went wrong.');
         console.error('Error:', error);
+        addMessageToChat('Sorry, something went wrong with processing your text.', false);
     });
 }

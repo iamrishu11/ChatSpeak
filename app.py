@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify, send_file, render_template, Response
+from flask import Flask, request, jsonify, render_template,send_file
 import io
 import pyttsx3
 import speech_recognition as sr
 import logging
-import os
 import time
 
 # Import bot functions and database models
@@ -35,27 +34,21 @@ def process_text():
         response_text = get_response(text)
         logger.info(f"Bot: {response_text}")
 
-        # Convert response text to speech
-        response_audio_path = 'static/response.mp3'
-        tts_engine.save_to_file(response_text, response_audio_path)
+        # Convert response text to speech and return as a binary response
+        audio_io = io.BytesIO()
+        tts_engine.save_to_file(response_text, audio_io)
         tts_engine.runAndWait()
+        audio_io.seek(0)  # Rewind the BytesIO object for reading
 
-        # Return both text and audio
+        # Return text and binary audio data
         return jsonify({
             'response_text': response_text,
-            'audio_url': '/static/response.mp3'
+            'audio': audio_io.getvalue().decode('latin1')  # Encode as latin1 to safely send binary data as text
         })
 
     except Exception as e:
+        logger.error(f"Error processing text: {e}")
         return jsonify({'error': str(e)}), 500
-
-    finally:
-        # Clean up the audio file
-        if os.path.exists(response_audio_path):
-            try:
-                os.remove(response_audio_path)
-            except Exception as e:
-                logger.error(f"Error removing file: {e}")
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
@@ -64,38 +57,52 @@ def process_audio():
         return jsonify({'error': 'No audio file provided'}), 400
 
     try:
+        # Read the audio file
         audio = audio_file.read()
+
+        # Process the audio file
         with sr.AudioFile(io.BytesIO(audio)) as source:
             audio_data = recognizer.record(source)
             text = recognizer.recognize_google(audio_data)
             logger.info(f"You: {text}")
 
+        # Generate a response based on the recognized text
         response_text = get_response(text)
         logger.info(f"Bot: {response_text}")
 
-        # Convert response text to speech
-        response_audio_path = 'static/response.mp3'
-        tts_engine.save_to_file(response_text, response_audio_path)
+        # Convert the response text to speech and return as a binary response
+        audio_io = io.BytesIO()
+        tts_engine.save_to_file(response_text, audio_io)
         tts_engine.runAndWait()
+        audio_io.seek(0)  # Rewind the BytesIO object for reading
 
-        # Return both text and audio
+        # Return text and binary audio data
         return jsonify({
             'response_text': response_text,
-            'audio_url': 'static/response.mp3'
+            'audio': audio_io.getvalue().decode('latin1')  # Encode as latin1 to safely send binary data as text
         })
 
     except sr.UnknownValueError:
+        logger.error("Speech was unintelligible")
         return jsonify({'error': 'Speech was unintelligible'}), 400
     except sr.RequestError as e:
+        logger.error(f"Speech recognition request error: {e}")
         return jsonify({'error': f'Speech recognition request error: {e}'}), 500
     except Exception as e:
+        logger.error(f"Error processing audio: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/export_txt', methods=['POST'])
 def export_txt():
+    # Create the content of the text file from conversation history
     file_content = "\n".join(conversation_history)
     file_name = f'chat_history_{int(time.time())}.txt'
-    return send_file(io.BytesIO(file_content.encode()), mimetype='text/plain', as_attachment=True, download_name=file_name)
+    
+    # Create a BytesIO object to serve as the file
+    file_io = io.BytesIO(file_content.encode())
+    
+    # Send the file as an attachment
+    return send_file(file_io, mimetype='text/plain', as_attachment=True, download_name=file_name)
 
 """
 @app.route('/export_db', methods=['POST'])
@@ -120,7 +127,7 @@ def export_db():
         return jsonify({'error': str(e)}), 500
     finally:
         session.close()
-
 """
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
