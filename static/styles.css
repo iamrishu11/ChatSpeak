@@ -204,7 +204,7 @@ h2 {
 /* User message styling */
 .user-message-gap {
     margin-bottom: 7.5px; /* Adding gap below the user prompt */
-    margin-top: 10px; /* Adding gap above the user prompt */
+    margin-top: 30px; /* Adding gap above the user prompt */
 }
 
 .user-message {
