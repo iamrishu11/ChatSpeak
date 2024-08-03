@@ -177,9 +177,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
+
+                // Extract the filename from the response headers or use a predefined format
+                const disposition = response.headers.get('Content-Disposition');
+                let filename = 'chat_history.txt'; // Default filename if not found in headers
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = 'chat_history.txt';
+                link.download = filename;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);

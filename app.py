@@ -3,7 +3,7 @@ import io
 import pyttsx3
 import speech_recognition as sr
 import logging
-import time
+from datetime import datetime
 import base64
 
 # Import bot functions and database models
@@ -116,15 +116,29 @@ def process_audio_file():
 
 @app.route('/export_txt', methods=['POST'])
 def export_txt():
-    # Create the content of the text file from conversation history
-    file_content = "\n".join(conversation_history)
-    file_name = f'chat_history_{int(time.time())}.txt'
+    try:
+        # Current time for the file name
+        timestamp = datetime.now().strftime("%B_%d_%I-%M-%S_%p")
+        file_name = f'chat_history_{timestamp}.txt'
+        logger.info(f"File name: {file_name}")
+
+        # Create the content of the text file from conversation history with timestamps
+        file_content = ""
+        for entry in conversation_history:
+            timestamp_entry, content = entry.split(' - ', 1) if ' - ' in entry else ('', entry)
+            if not timestamp_entry:
+                timestamp_entry = datetime.now().strftime('%B %d %I:%M:%S %p')  # Add timestamp if none exists
+            file_content += f"{timestamp_entry} - {content}\n"
+
+        # Create a BytesIO object to serve as the file
+        file_io = io.BytesIO(file_content.encode())
+        
+        # Send the file as an attachment with the correct filename
+        return send_file(file_io, mimetype='text/plain', as_attachment=True, download_name=file_name)
     
-    # Create a BytesIO object to serve as the file
-    file_io = io.BytesIO(file_content.encode())
-    
-    # Send the file as an attachment
-    return send_file(file_io, mimetype='text/plain', as_attachment=True, download_name=file_name)
+    except Exception as e:
+        app.logger.error(f"Error exporting text file: {e}")
+        return jsonify({'error': str(e)}), 500
 
 """
 @app.route('/export_db', methods=['POST'])
