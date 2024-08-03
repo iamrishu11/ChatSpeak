@@ -4,6 +4,7 @@ import pyttsx3
 import speech_recognition as sr
 import logging
 import time
+import base64
 
 # Import bot functions and database models
 from burt import get_response, conversation_history
@@ -12,7 +13,7 @@ from burt import get_response, conversation_history
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # Initialize STT (Speech-to-Text) and TTS (Text-to-Speech)
@@ -34,17 +35,7 @@ def process_text():
         response_text = get_response(text)
         logger.info(f"Bot: {response_text}")
 
-        # Convert response text to speech and return as a binary response
-        audio_io = io.BytesIO()
-        tts_engine.save_to_file(response_text, audio_io)
-        tts_engine.runAndWait()
-        audio_io.seek(0)  # Rewind the BytesIO object for reading
-
-        # Return text and binary audio data
-        return jsonify({
-            'response_text': response_text,
-            'audio': audio_io.getvalue().decode('latin1')  # Encode as latin1 to safely send binary data as text
-        })
+        return jsonify({'response_text': response_text})
 
     except Exception as e:
         logger.error(f"Error processing text: {e}")
@@ -52,6 +43,35 @@ def process_text():
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
+    text = request.form.get('text')
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+
+    try:
+        # Generate response text
+        response_text = get_response(text)
+        logger.info(f"Bot: {response_text}")
+
+        # Convert response text to speech and save to a BytesIO object
+        audio_io = io.BytesIO()
+        tts_engine.save_to_file(response_text, audio_io)
+        tts_engine.runAndWait()
+        audio_io.seek(0)  # Rewind the BytesIO object for reading
+
+        # Encode the audio file as Base64
+        audio_base64 = base64.b64encode(audio_io.getvalue()).decode('utf-8')
+
+        return jsonify({
+            'response_text': response_text,
+            'audio_base64': audio_base64
+        })
+
+    except Exception as e:
+        logger.error(f"Error processing audio: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/process_audio_file', methods=['POST'])
+def process_audio_file():
     audio_file = request.files.get('audio')
     if not audio_file:
         return jsonify({'error': 'No audio file provided'}), 400
@@ -70,16 +90,18 @@ def process_audio():
         response_text = get_response(text)
         logger.info(f"Bot: {response_text}")
 
-        # Convert the response text to speech and return as a binary response
+        # Convert the response text to speech and save to a BytesIO object
         audio_io = io.BytesIO()
         tts_engine.save_to_file(response_text, audio_io)
         tts_engine.runAndWait()
         audio_io.seek(0)  # Rewind the BytesIO object for reading
 
-        # Return text and binary audio data
+        # Encode the audio file as Base64
+        audio_base64 = base64.b64encode(audio_io.getvalue()).decode('utf-8')
+
         return jsonify({
             'response_text': response_text,
-            'audio': audio_io.getvalue().decode('latin1')  # Encode as latin1 to safely send binary data as text
+            'audio_base64': audio_base64
         })
 
     except sr.UnknownValueError:
@@ -128,6 +150,5 @@ def export_db():
     finally:
         session.close()
 """
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

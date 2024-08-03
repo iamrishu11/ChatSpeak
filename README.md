@@ -68,7 +68,8 @@ This project is as structured as follows:
    ├── test/                 # Test-related files
    │   ├── test.html         # HTML files for testing
    │   ├── cURL-testing.txt  # Text file with cURL commands or test data
-   │   └── test.py           # Python scripts for testing
+   │   ├── test.py           # Python scripts for testing
+   │   └── test1.py          # Python scripts for testing
    │
    ├── __pycache__/          # Compiled Python files
    │   ├── app.cpython-312.pyc
@@ -81,24 +82,24 @@ This project is as structured as follows:
    └── LICENSE               # License for the project
    ```
 
-## Project Workflow
+## Project Workflow 🛠️
 
-### 1. User Interaction
+1. User Interaction
 - **Page Load**: The client-side JavaScript initializes and applies the current theme.
 - **Text Input**: Users submit text through the input field, triggering text processing.
 - **Audio Recording**: Users record audio via the microphone icon, which is then processed.
 
-### 2. Client-Side JavaScript
+2. Client-Side JavaScript
 - **Process Text Input**: Sends text to the server, displays the response, and plays audio.
 - **Record and Process Audio**: Records audio, sends it to the server, and displays recognized text.
 - **Export Chat History as TXT**: Exports chat history to a TXT file if there are messages.
 
-### 3. Server-Side (Flask)
+3. Server-Side (Flask)
 - **Process Text**: Processes text input, generates a response, and returns text and audio.
 - **Process Audio**: Converts audio to text, generates a response, and handles audio playback.
 - **Export Chat History as TXT**: Creates a TXT file from chat history and provides it for download.
 
-### 4. Error Handling and User Feedback
+4. Error Handling and User Feedback
 - **Client-Side Errors**: Handles and displays errors during processing and export.
 - **Server-Side Errors**: Logs errors and returns HTTP status codes with messages.
 
@@ -106,8 +107,10 @@ This project is as structured as follows:
 ## API Endpoints 🔌
 
 - **POST /process_text:** Send text messages to the bot and receive text responses.
-- **POST /process_audio:** Send audio files to the bot; the bot will transcribe the audio and respond with an audio reply.
+- **POST /process_audio:** Takes input from '/process_text' or '/process_text_files' and genrate audio 
+- **POST /process_audio_files:** Send audio files to the bot; the bot will transcribe the audio and respond in text.
 - **POST /export_txt:** It lets you export your conversation history in 'txt' file.
+- **POST /export_db:** It lets you export your conversation history in 'database' file.
 
 ## Contributing 🤝
 

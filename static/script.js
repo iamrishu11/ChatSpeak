@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         formData.append('audio', audioBlob, 'audio.wav');
     
                         try {
-                            const response = await fetch('/process_audio', {
+                            const response = await fetch('/process_audio_file', {
                                 method: 'POST',
                                 body: formData
                             });
@@ -117,10 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
                                 throw new Error('Network response was not ok');
                             }
     
-                            const { response_text } = await response.json(); // Expect JSON response from server
+                            const { response_text, audio_base64 } = await response.json(); // Expect JSON response from server
     
                             // Update the placeholder message to display the recognized text
                             addMessageToChat(`Recognized text: ${response_text}`, false);
+    
+                            // Play the audio
+                            const audio = new Audio(`data:audio/wav;base64,${audio_base64}`);
+                            audio.play();
     
                         } catch (error) {
                             console.error('Error:', error);
@@ -188,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle export as database button click
+    // Handle export as Database button click
     if (exportDbButton) {
         exportDbButton.addEventListener('click', async () => {
             if (isChatContainerEmpty()) {
@@ -217,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
             } catch (error) {
                 console.error('Error:', error);
-                alert('Sorry, something went wrong with exporting the database.');
+                alert('Sorry, something went wrong with exporting the chat history.');
             }
         });
     }
@@ -259,34 +263,47 @@ function addMessageToChat(message, isUser = false) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Function to process user input
-function processUserInput(input) {
-    // Add the user's message to the chat
-    addMessageToChat(`${input}`, true); // Sent by the user through text
+// Function to process user input and display response
+async function processUserInput(input) {
+    addMessageToChat(`${input}`, true);
 
-    // Create a FormData object to send the input text to the server
-    const formData = new FormData();
-    formData.append('text', input);
+    try {
+        const response = await fetch('/process_text', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ text: input })
+        });
 
-    // Send a POST request to the server to process the text input
-    fetch('/process_text', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok.');
+            throw new Error('Network response was not ok');
         }
-        return response.json(); // Parse the response as JSON
-    })
-    .then(data => {
-        const audioUrl = data.audio_url;
-        const audio = new Audio(audioUrl);
+
+        const { response_text } = await response.json();
+
+        // Display bot response
+        addMessageToChat(`${response_text}`, false);
+
+        // Generate and play audio response
+        const audioResponse = await fetch('/process_audio', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ text: response_text })
+        });
+
+        if (!audioResponse.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const { audio_base64 } = await audioResponse.json();
+        const audio = new Audio(`data:audio/wav;base64,${audio_base64}`);
         audio.play();
-        addMessageToChat('Bot is processing your text...', false);
-    })
-    .catch(error => {
+
+    } catch (error) {
         console.error('Error:', error);
-        addMessageToChat('Sorry, something went wrong with processing your text.', false);
-    });
+        addMessageToChat('Sorry, something went wrong with processing your text.', true);
+    }
 }

@@ -157,10 +157,6 @@ h2 {
 
 /* Text input container at the bottom */
 
-input[type="text"] {
-    font-family: "Josefin Sans", sans-serif;;
-}
-
 .text-input-container {
     display: flex;
     align-items: center;
@@ -213,7 +209,7 @@ input[type="text"] {
 
 .user-message {
     align-self: flex-end; /* Align user messages to the right */
-    background-color: #e1ffc7; /* Example background color */
+    background-color: #dcf8c6; /* Example background color */
     color: #000; /* Ensure text is black or a contrasting color */
     padding: 10px;
     border-radius: 10px;
@@ -271,17 +267,6 @@ body.light-theme .theme-toggle .sun {
 body.light-theme .theme-toggle .moon {
     color: #333; /* Light color for moon in light theme */
     transform: translateX(20px); /* Move moon emoji when light theme is active */
-}
-
-/* Keyframe animation for button slide effect */
-@keyframes slideIn {
-    0% { transform: translateX(20px); }
-    100% { transform: translateX(0); }
-}
-
-@keyframes slideOut {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-20px); }
 }
 
 /* Media Queries for Responsive Design */
