@@ -1,5 +1,7 @@
 let mediaRecorder;
 let audioChunks = [];
+let recognition;
+let isRecording = false;
 
 // Handle DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -84,10 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle microphone icon click for recording
     if (micIcon) {
         micIcon.addEventListener('click', async () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
+            if (isRecording) {
+                // Stop recording
                 mediaRecorder.stop();
                 micIcon.textContent = '🎙️'; // Change icon back to unrecording state
+                isRecording = false;
             } else {
+                // Start recording
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
@@ -97,50 +102,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
     
                     mediaRecorder.onstop = async () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); // Ensure this MIME type matches server expectation
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                         audioChunks = []; // Clear the chunks
                         micIcon.textContent = '🎙️'; // Change icon back to unrecording state
     
                         // Add a placeholder message to the chat container
                         addMessageToChat('Processing your audio message...', true);
     
-                        const formData = new FormData();
-                        formData.append('audio', audioBlob, 'audio.wav');
-    
-                        try {
-                            const response = await fetch('/process_audio_file', {
-                                method: 'POST',
-                                body: formData
-                            });
-    
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-    
-                            const { response_text, audio_base64 } = await response.json(); // Expect JSON response from server
-    
-                            // Update the placeholder message to display the recognized text
-                            addMessageToChat(`Recognized text: ${response_text}`, false);
-    
-                            // Play the audio
-                            const audio = new Audio(`data:audio/wav;base64,${audio_base64}`);
-                            audio.play();
-    
-                        } catch (error) {
-                            console.error('Error:', error);
-                            addMessageToChat('Sorry, something went wrong with processing your audio.', true);
-                        }
+                        // Convert audio to text and add it to the chat container
+                        const text = await convertAudioToText(audioBlob);
+                        //addMessageToChat(text, true); // Add recognized text to chat
+                        await processUserInput(text);
                     };
     
+                    // Start recording
                     mediaRecorder.start();
                     micIcon.textContent = '⏹️'; // Change icon to recording state
+                    isRecording = true;
                 } catch (error) {
                     console.error('Error accessing microphone:', error);
                 }
             }
         });
     }
-    
+
     // Handle menu visibility
     menuIcon.addEventListener('click', function() {
         // Toggle visibility of the menu
@@ -165,20 +150,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('No chat content available to export.');
                 return;
             }
-            
+
             try {
                 const response = await fetch('/export_txt', {
                     method: 'POST'
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-    
+
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
 
-                // Extract the filename from the response headers or use a predefined format
                 const disposition = response.headers.get('Content-Disposition');
                 let filename = 'chat_history.txt'; // Default filename if not found in headers
                 if (disposition && disposition.indexOf('attachment') !== -1) {
@@ -196,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
-    
+
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry, something went wrong with exporting the chat history.');
@@ -216,11 +200,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('/export_db', {
                     method: 'POST'
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-    
+
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -230,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
-    
+
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry, something went wrong with exporting the chat history.');
@@ -293,29 +277,89 @@ async function processUserInput(input) {
         }
 
         const { response_text } = await response.json();
-
-        // Display bot response
         addMessageToChat(`${response_text}`, false);
-
-        // Generate and play audio response
-        const audioResponse = await fetch('/process_audio', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({ text: response_text })
-        });
-
-        if (!audioResponse.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const { audio_base64 } = await audioResponse.json();
-        const audio = new Audio(`data:audio/wav;base64,${audio_base64}`);
-        audio.play();
+        speakText(response_text);
 
     } catch (error) {
         console.error('Error:', error);
         addMessageToChat('Sorry, something went wrong with processing your text.', false);
     }
+}
+
+// Function to convert text to speech and play it
+function speakText(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'en-US';
+    window.speechSynthesis.speak(speech);
+}
+
+// Convert Audio Blob to Text using Speech Recognition API
+function convertAudioToText(audioBlob) {
+    return new Promise((resolve, reject) => {
+        // Check if SpeechRecognition API is available
+        if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+            return reject('Speech Recognition API not supported');
+        }
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        // Create a MediaSource for the audio blob
+        const audioContext = new AudioContext();
+        const source = audioContext.createBufferSource();
+
+        const fileReader = new FileReader();
+        fileReader.onload = async () => {
+            const audioData = fileReader.result;
+            try {
+                const audioBuffer = await audioContext.decodeAudioData(audioData);
+
+                // Connect source to context
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+
+                // Create a script processor to process audio data
+                const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+                scriptProcessor.onaudioprocess = (event) => {
+                    // Here you would normally send audio data to a speech recognition service
+                    // Since we're just focusing on getting recognized text, no need to process further
+                };
+
+                source.connect(scriptProcessor);
+                scriptProcessor.connect(audioContext.destination);
+
+                // Start playback of the audio
+                source.start();
+
+                // Handle recognition result
+                recognition.onresult = (event) => {
+                    if (event.results.length > 0) {
+                        const transcript = event.results[0][0].transcript;
+                        resolve(transcript);
+                    } else {
+                        reject('No transcript available');
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    addMessageToChat(`${event.error} provided`,false);
+                };
+
+                // Start the recognition process
+                recognition.start();
+            } catch (error) {
+                reject('Error decoding audio data: ' + error.message);
+            }
+        };
+
+        fileReader.onerror = (event) => {
+            reject('Error reading audio file: ' + event.message);
+        };
+
+        // Read the audio blob as an ArrayBuffer
+        fileReader.readAsArrayBuffer(audioBlob);
+    });
 }

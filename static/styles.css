@@ -83,7 +83,9 @@ h2 {
 /* Style the page container */
 .container {
     max-width: 100%; /* Make container full width */
-    margin: 0 auto;
+    margin: 0;
+    margin-left: 20%;
+    margin-right: 20%;
     padding: 20px;
     background-color: #fff; /* Default light theme background for container */
     border-radius: 8px;
@@ -93,6 +95,12 @@ h2 {
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Distribute space between content and footer */
+}
+
+#welcomeMessage {
+    text-align: center; /* Align text inside the div */
+    margin: 0 auto; /* Center the div itself */
+    padding: 20px; /* Add padding for better visibility */
 }
 
 #chatContainer {
