@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         micIcon.textContent = '🎙️'; // Change icon back to unrecording state
     
                         // Add a placeholder message to the chat container
-                        addMessageToChat('Processing your audio message...', true);
+                        // addMessageToChat('Processing your audio message...', true);
     
                         // Convert audio to text and add it to the chat container
                         const text = await convertAudioToText(audioBlob);
@@ -332,7 +332,7 @@ function convertAudioToText(audioBlob) {
                 scriptProcessor.connect(audioContext.destination);
 
                 // Start playback of the audio
-                source.start();
+                 source.start();
 
                 // Handle recognition result
                 recognition.onresult = (event) => {

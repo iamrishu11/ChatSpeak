@@ -1,12 +1,12 @@
-from flask import Flask, request, jsonify, render_template,send_file
+from flask import Flask, request, jsonify, render_template, send_file
 import io
 import logging
+import os
 from datetime import datetime
-
 
 # Import bot functions and database models
 from burt import get_response, conversation_history
-# from models import ChatHistory, engine, Session
+from models import ChatHistory, engine, Session
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -58,13 +58,11 @@ def export_txt():
         return send_file(file_io, mimetype='text/plain', as_attachment=True, download_name=file_name)
     
     except Exception as e:
-        app.logger.error(f"Error exporting text file: {e}")
+        logger.error(f"Error exporting text file: {e}")
         return jsonify({'error': str(e)}), 500
 
-"""
 @app.route('/export_db', methods=['POST'])
 def export_db():
-    # Initialize a new database session
     session = Session()
     try:
         # Add conversation history to the database
@@ -72,18 +70,23 @@ def export_db():
             role, message = entry.split(":", 1)
             role = role.strip()
             message = message.strip()
-            chat_entry = ChatHistory(role=role, message=message)
+            chat_entry = ChatHistory(role=role, message=message, user_id=1)  # Ensure user_id is set
             session.add(chat_entry)
         session.commit()
 
-        # Create a file to download
+        # Ensure the database file exists
         db_file_path = 'chat_history.db'
+        if not os.path.exists(db_file_path):
+            raise FileNotFoundError(f"Database file '{db_file_path}' does not exist.")
+
+        # Send the file as an attachment with the correct filename
         return send_file(db_file_path, mimetype='application/x-sqlite3', as_attachment=True, download_name=db_file_path)
+
     except Exception as e:
         logger.error(f"Error exporting to database: {e}")
         return jsonify({'error': str(e)}), 500
     finally:
         session.close()
-"""
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
