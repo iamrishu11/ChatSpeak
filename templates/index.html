@@ -19,91 +19,6 @@
     <!-- FontAwesome Icons -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'> 
 
-    <!-- Styles for Modal -->
-    <style>
-        /* Modal Container */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Fixed positioning */
-            z-index: 1000; /* High z-index to overlay other elements */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; /* Enable scrolling if content overflows */
-            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-        }
-        
-        /* Modal Content */
-        .modal-content {
-            background-color: #fff; /* Light background for modal content */
-            margin: 5% auto; /* Centered horizontally with margin from top */
-            padding: 20px;
-            border: 1px solid #888; /* Border around the modal */
-            width: 80%; /* Width of the modal content */
-            max-width: 500px; /* Max width for better control on larger screens */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
-            color: #333; /* Dark text color for light theme */
-            position: relative; /* Relative positioning for close button */
-            max-height: 80vh; /* Max height of the modal */
-            overflow-y: auto; /* Scroll if content exceeds max-height */
-        }
-        
-        /* Dark Theme Modal Content */
-        body.dark-theme .modal-content {
-            background-color: #444; /* Dark background for dark theme */
-            color: #ddd; /* Light text color for dark theme */
-        }
-        
-        /* Close Button */
-        .close {
-            color: #aaa;
-            float: right; /* Float right to align with the top-right corner */
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute; /* Absolute positioning to stay at the top-right */
-            top: 10px;
-            right: 10px;
-        }
-        
-        /* Close Button Hover/Focus */
-        .close:hover,
-        .close:focus {
-            color: #000; /* Change color on hover/focus */
-            text-decoration: none;
-        }
-        
-        /* Input Fields in Modal */
-        .modal input[type="email"],
-        .modal input[type="password"] {
-            width: calc(100% - 20px); /* Full width minus padding */
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Include padding and border in element's width and height */
-        }
-        
-        /* Dark Theme Input Fields */
-        body.dark-theme .modal input[type="email"],
-        body.dark-theme .modal input[type="password"] {
-            background-color: #555; /* Darker background in dark theme */
-            border: 1px solid #777; /* Darker border in dark theme */
-            color: #ddd; /* Light text color in dark theme */
-        }
-        
-        /* Form Button */
-        .modal button {
-            margin-top: 10px; /* Space above the button */
-        }
-        
-        /* Button Hover Effect */
-        .modal button:hover {
-            background-color: #0056b3; /* Darker background on hover */
-        }
-    </style>
 </head>
 <body class="light-theme">
     <div class="navbar" aria-label="Main Navigation">
@@ -153,14 +68,23 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2 style="border-bottom: none;">Login</h2>
+            <h2 style="border-bottom: none;">Welcome Back!</h2>
+            <p style="text-align: center;">Please enter your details to sign in.</p>
             <form id="loginForm">
                 <label for="email">Email Address:</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <br> 
+                <div class="remember-forgot">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                    <a href="#" style="margin-left: 225px;">Forgot password?</a>
+                </div>
+                <br>
                 <button type="submit">Login</button>
             </form>
+            <p style="text-align: center;">Don't have an account yet? <a href="#" id="opensignupmodal">Sign Up</a></p>
         </div>
     </div>
     
@@ -168,54 +92,24 @@
     <div id="signupModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2 style="border-bottom: none;">Sign Up</h2>
+            <h2 style="border-bottom: none;">New here?</h2>
+            <p style="text-align: center;">Please enter your details to create your account.</p>
             <form id="signupForm">
                 <label for="emailSignup">Email Address:</label>
-                <input type="email" id="emailSignup" name="email" placeholder="Enter your email" required>
+                <input type="email" id="emailSignup" name="email" placeholder="Enter your email" required>             
                 <label for="passwordSignup">Password:</label>
-                <input type="password" id="passwordSignup" name="password" placeholder="Enter your password" required>
+                <input type="password" id="passwordSignup" name="password" placeholder="Enter your password" required>                
+                <label for="confirmPasswordSignup">Confirm Password:</label>
+                <input type="password" id="confirmPasswordSignup" name="confirmPassword" placeholder="Confirm your password" required>             
+                <!-- Error message container -->
+                <div id="signupError" style="color: red; text-align: center; margin-bottom: 10px;"></div>    
                 <button type="submit">Sign Up</button>
             </form>
+            <p style="text-align: center;">Already have an account? <a href="#" id="openloginmodal">Log In</a></p>
         </div>
     </div>
 
     <!-- This is my JS file -->
     <script src="../static/script.js"></script>
-    <script>
-    
-    // Function to open the modal
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'block';
-    }
-    
-    // Function to close the modal
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-    
-    // Add event listeners to open modal
-    document.getElementById('loginLink').addEventListener('click', function() {
-        openModal('loginModal');
-    });
-    document.getElementById('signupLink').addEventListener('click', function() {
-        openModal('signupModal');
-    });
-    
-    // Add event listeners to close modal
-    var closeButtons = document.getElementsByClassName('close');
-    for (var i = 0; i < closeButtons.length; i++) {
-        closeButtons[i].addEventListener('click', function() {
-            var modal = this.closest('.modal');
-            closeModal(modal.id);
-        });
-    }
-    
-    // Close modal if the user clicks outside of it
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) {
-            closeModal(event.target.id);
-        }
-    }
-    </script>
 </body>
 </html>

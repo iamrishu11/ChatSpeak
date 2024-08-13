@@ -363,3 +363,61 @@ function convertAudioToText(audioBlob) {
         fileReader.readAsArrayBuffer(audioBlob);
     });
 }
+    
+// Function to open the modal
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
+
+// Function to close the modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Add event listeners to open modal
+document.getElementById('loginLink').addEventListener('click', function() {
+    openModal('loginModal');
+});
+document.getElementById('signupLink').addEventListener('click', function() {
+    openModal('signupModal');
+});
+
+// Add event listeners to close modal
+var closeButtons = document.getElementsByClassName('close');
+for (var i = 0; i < closeButtons.length; i++) {
+    closeButtons[i].addEventListener('click', function() {
+        var modal = this.closest('.modal');
+        closeModal(modal.id);
+    });
+}
+// Event listener for opening different modal from existing modal
+document.getElementById('openloginmodal').addEventListener('click', function(){
+    closeModal('signupModal');
+    openModal('loginModal');
+});
+document.getElementById('opensignupmodal').addEventListener('click', function(){
+    closeModal('loginModal');
+    openModal('signupModal');
+});
+// Close modal if the user clicks outside of it
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        closeModal(event.target.id);
+    }
+}
+// Function to check if passwords match and update the error message
+function checkPasswordsMatch() {
+    var password = document.getElementById('passwordSignup').value;
+    var confirmPassword = document.getElementById('confirmPasswordSignup').value;
+    var errorContainer = document.getElementById('signupError');
+    
+    if (password !== confirmPassword) {
+        errorContainer.textContent = 'Passwords do not match.';
+    } else {
+        errorContainer.textContent = ''; // Clear the error message if passwords match
+    }
+}
+
+// Add event listeners to password fields for real-time validation
+document.getElementById('passwordSignup').addEventListener('input', checkPasswordsMatch);
+document.getElementById('confirmPasswordSignup').addEventListener('input', checkPasswordsMatch); 

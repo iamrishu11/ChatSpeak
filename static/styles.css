@@ -410,3 +410,97 @@ header {
 .menu-container.active .menu-content {
     display: block;
 }
+
+/* Dark Theme Links in Modal */
+body.dark-theme .modal a {
+    color: #ddd; /* Light text color for links in dark mode */
+}
+
+body.dark-theme .modal a:hover,
+body.dark-theme .modal a:focus {
+    color: #fff; /* Brighter color on hover/focus for better readability */
+    text-decoration: underline; /* Optional: underline on hover/focus for better visibility */
+}
+
+/* Modal Container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed positioning */
+    z-index: 1000; /* High z-index to overlay other elements */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scrolling if content overflows */
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff; /* Light background for modal content */
+    margin: 5% auto; /* Centered horizontally with margin from top */
+    padding: 20px;
+    border: 1px solid #888; /* Border around the modal */
+    width: 80%; /* Width of the modal content */
+    max-width: 500px; /* Max width for better control on larger screens */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    color: #333; /* Dark text color for light theme */
+    position: relative; /* Relative positioning for close button */
+    max-height: 80vh; /* Max height of the modal */
+    overflow-y: auto; /* Scroll if content exceeds max-height */
+}
+
+/* Dark Theme Modal Content */
+body.dark-theme .modal-content {
+    background-color: #444; /* Dark background for dark theme */
+    color: #ddd; /* Light text color for dark theme */
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right; /* Float right to align with the top-right corner */
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute; /* Absolute positioning to stay at the top-right */
+    top: 10px;
+    right: 10px;
+}
+
+/* Close Button Hover/Focus */
+.close:hover,
+.close:focus {
+    color: #000; /* Change color on hover/focus */
+    text-decoration: none;
+}
+
+/* Input Fields in Modal */
+.modal input[type="email"],
+.modal input[type="password"] {
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in element's width and height */
+}
+
+/* Dark Theme Input Fields */
+body.dark-theme .modal input[type="email"],
+body.dark-theme .modal input[type="password"] {
+    background-color: #555; /* Darker background in dark theme */
+    border: 1px solid #777; /* Darker border in dark theme */
+    color: #ddd; /* Light text color in dark theme */
+}
+
+/* Form Button */
+.modal button {
+    margin-top: 10px; /* Space above the button */
+}
+
+/* Button Hover Effect */
+.modal button:hover {
+    background-color: #339e6a; /* Darker background on hover */
+}
