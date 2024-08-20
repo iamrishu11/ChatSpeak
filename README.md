@@ -59,7 +59,8 @@ This project is as structured as follows:
    ├── app.py                # Main application file
    ├── bot.py                # loop bot logic
    ├── burt.py               # Bot file for app.py
-   ├── chat_history.db       # Database file to store the chat history
+   ├── auth_helpers.py       # Create hash password
+   ├── chat_history.db       # Database file to store the chat history and user credentials
    ├── config.json           # Configuration file for the bot
    ├── models.py             # Defines the database Schema
    ├── requirements.txt      # List of project dependencies
@@ -73,12 +74,10 @@ This project is as structured as follows:
    │   └── script.js         # JavaScript files
    │
    ├── test/                 # Test-related files
-   │   ├── base64_test.js    # JS logic for testing base64 encoder
    │   ├── cURL-testing.txt  # Text file with cURL commands or test data       
    │   ├── test.html         # HTML files for testing
    │   ├── test.py           # Python scripts for testing
-   │   ├── test2.py          # Python scripts for testing
-   │   └── TESTin.html       # tesing base64 encoder
+   │   └── test2.py          # Python scripts for testing
    │
    ├── __pycache__/          # Compiled Python files
    │   ├── app.cpython-312.pyc
@@ -196,6 +195,8 @@ This User Interaction Flow provides a comprehensive overview of how users intera
 - **POST /process_text:** Send text messages to the bot and receive text responses.
 - **POST /export_txt:** It lets you export your conversation history in 'txt' file.
 - **POST /export_db:** It lets you export your conversation history in 'database' file.
+- **POST /login:** It lets the user to login.
+- **POST /signup:** It let user to create Account.
 
 ## Contributing 🤝
 
