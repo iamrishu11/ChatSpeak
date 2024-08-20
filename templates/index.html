@@ -76,11 +76,13 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 <br> 
-                <div class="remember-forgot">
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">Remember me</label>
-                    <a href="#" style="margin-left: 225px;">Forgot password?</a>
-                </div>
+                <div class="remember-forgot" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" style="padding-right: 15px;">Forgot password?</a>
+                </div>                
                 <br>
                 <button type="submit">Login</button>
             </form>

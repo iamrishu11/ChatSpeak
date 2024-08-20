@@ -6,7 +6,8 @@ from datetime import datetime
 
 # Import bot functions and database models
 from burt import get_response, conversation_history
-from models import ChatHistory, engine, Session
+from models import ChatHistory, engine, Session, User
+from auth_helpers import hash_password, verify_password
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -84,6 +85,60 @@ def export_db():
 
     except Exception as e:
         logger.error(f"Error exporting to database: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.form
+    email = data.get('email')
+    password = data.get('password')
+    confirm_password = data.get('confirmPassword')
+
+    if not email or not password or not confirm_password:
+        return jsonify({'error': 'All fields are required'}), 400
+
+    if password != confirm_password:
+        return jsonify({'error': 'Passwords do not match'}), 400
+
+    hashed_password = hash_password(password)
+
+    session = Session()
+    try:
+        existing_user = session.query(User).filter_by(email=email).first()
+        if existing_user:
+            return jsonify({'error': 'Email already registered'}), 400
+
+        new_user = User(email=email, password=hashed_password)
+        session.add(new_user)
+        session.commit()
+        return jsonify({'message': 'Signup successful'})
+    except Exception as e:
+        logger.error(f"Error during signup: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.form
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required'}), 400
+
+    session = Session()
+    try:
+        user = session.query(User).filter_by(email=email).first()
+        if not user or not verify_password(user.password, password):
+            return jsonify({'error': 'Invalid credentials'}), 401
+
+        # Here, you might set a session or JWT token to keep the user logged in
+        return jsonify({'message': 'Login successful'})
+    except Exception as e:
+        logger.error(f"Error during login: {e}")
         return jsonify({'error': str(e)}), 500
     finally:
         session.close()

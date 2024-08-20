@@ -421,3 +421,73 @@ function checkPasswordsMatch() {
 // Add event listeners to password fields for real-time validation
 document.getElementById('passwordSignup').addEventListener('input', checkPasswordsMatch);
 document.getElementById('confirmPasswordSignup').addEventListener('input', checkPasswordsMatch); 
+
+// Handle login form submission
+document.getElementById('loginForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+        alert('Please enter both email and password.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ email, password })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(result.message || 'Login successful');
+            closeModal('loginModal'); // Close the login modal on success
+        } else {
+            const error = await response.json();
+            alert(error.error || 'Login failed');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error logging in');
+    }
+});
+
+// Handle signup form submission
+document.getElementById('signupForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const email = document.getElementById('emailSignup').value;
+    const password = document.getElementById('passwordSignup').value;
+    const confirmPassword = document.getElementById('confirmPasswordSignup').value;
+    if (!email || !password || !confirmPassword) {
+        alert('Please fill out all fields.');
+        return;
+    }
+    if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+    }
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ email, password, confirmPassword })
+        });
+        if (response.ok) {
+            const result = await response.json();
+            alert(result.message || 'Signup successful');
+            closeModal('signupModal'); // Close the signup modal on success
+        } else {
+            const error = await response.json();
+            alert(error.error || 'Signup failed');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error signing up');
+    }
+});

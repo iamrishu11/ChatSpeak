@@ -4,12 +4,20 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 # Define the base class for SQLAlchemy models
 Base = declarative_base()
 
+# Define the User model
+class User(Base):
+    __tablename__ = 'users'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)  # Unique identifier for each user
+    email = Column(String(255), unique=True, nullable=False)   # User's email address
+    password = Column(String(255), nullable=False)              # User's hashed password
+
 # Define the ChatHistory model with the specified column order
 class ChatHistory(Base):
     __tablename__ = 'chat_history'
     
     id = Column(Integer, primary_key=True, autoincrement=True)  # Unique identifier for each record
-    user_id = Column(Integer, default=1, nullable=False)        # New column with default value of 1
+    user_id = Column(Integer, nullable=False, default=1)        # User ID associated with the message
     role = Column(String, nullable=False)                        # Role of the person or entity sending the message
     message = Column(String, nullable=False)                     # Text of the message
 
