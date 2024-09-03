@@ -1,0 +1,348 @@
+/* Reset and basic styles */
+body, h1, h2, h3, p, ul, li, a {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header and navigation styling */
+header {
+    padding: 20px 40px;
+    background-color: white;
+}
+
+/* Nav container with flexbox */
+nav {
+    display: flex;
+    justify-content: space-between; /* Aligns logo to left and links to right */
+    align-items: center;
+}
+
+/* Logo styling */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo image */
+.logo img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+/* Logo text styling */
+.logo-text h1 {
+    font-size: 18px;
+}
+
+.logo-text p {
+    font-size: 15px;
+    color: #666;
+}
+
+/* Navigation links styling */
+.nav-links {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Navigation link items */
+.nav-links li {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+/* styles.css */
+a.login {
+    display: flex;
+    align-items: center; /* Center align items vertically */
+    text-decoration: none; /* Remove underline from link */
+    color: #000; /* Set link color */
+    font-size: 16px; /* Adjust font size for the text */
+    margin-left: 15px;
+}
+
+a.login img {
+    width: 25px; /* Set image width */
+    height: 25px; /* Set image height */
+    margin-right: 8px; /* Space between image and text */
+    vertical-align: middle; /* Align image vertically with text */
+}
+
+/* Get Started button styling */
+.get-started, .see-more , .checkout{
+    text-decoration: none;
+    background-color: #FFCC00;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+.get-started:hover, .see-more:hover, .checkout:hover{
+    background-color: #000;
+    color: #FFCC00;
+}
+
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    padding: 100px 40px 0px;
+    background-color: #fff;
+    margin: 0px 0px 0px 70px;
+}
+
+.hero-content {
+    max-width: 50%;
+}
+
+.hero-content h2 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.cta-button img {
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+}
+
+.cta-button:hover {
+    color: #333;
+    background-color: #FFCC00;
+}
+
+.hero-image img {
+    max-width: 550px;
+    height: auto;
+}
+
+.features {
+    display: flex;
+    justify-content: space-around;
+    padding: 80px 0px;
+    background-color: #fff;
+}
+
+.feature-item {
+    display: flex;
+    text-align: center;
+    max-width: 200px;
+    text-align: left;
+    margin-right: 70px;
+}
+
+.feature-item img {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+    padding: 15px;
+}
+
+.feature-item p {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0px;
+}
+
+/* Slanted section styles */
+.slanted-section {
+    background-color: #FFCC00;
+    clip-path: polygon(100% 100%, 0 100%, 0 0, 100% 20%);
+    padding: 100px 40px;
+}
+
+.slanted-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.left-content h2 {
+    font-size: 36px;
+    max-width: 40%;
+}
+
+.right-content p {
+    font-size: 16px;
+    max-width: 40%;
+}
+
+/* Offering section */
+.offerings {
+    padding: 100px 40px;
+    background-color: #fff;
+}
+
+.offerings h2 {
+    padding-left: 70px;
+}
+
+.offerings p {
+    font-size: 16px;
+    max-width: 550px;
+    padding-left: 70px;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    padding: 50px 0px 0px 70px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card img {
+    display: inline-flex;
+    max-width: 400px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 16px;
+    color: #555;
+    padding-left: 0px;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+/* Creatives Section */
+.creatives-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 40px;
+    background-color: #fff;
+}
+
+.creatives-content {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.left-graphic {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-graphic img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+}
+
+.right-text {
+    flex: 1;
+    padding-left: 40px;
+}
+
+.right-text h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.right-text p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    color: #555;
+}
+
+.features {
+    display: flex;
+    gap: 20px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.feature img {
+    width: 24px;
+    height: 24px;
+}
+
+.feature span {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/*Pricing Style */
+
+.pricing {
+    background-color: #FFD7EF;
+    clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 20%);
+    padding: 100px 40px;
+}
+
+.pricing-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 70px;
+}
+
+.pricing-left {
+    max-width: 40%;
+}
